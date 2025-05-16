@@ -1,7 +1,13 @@
 import jwt from 'jsonwebtoken';
 
 export default function handler(req, res) {
-  const [id, secret] = '68261dae6ab8fa0001a116bb:305710084c895aa9f34bbd49361a7f8c1829033f95acd4e1dcecab766033efa3'.split(':');
+  const apiKey = process.env.ADMIN_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Missing ADMIN_API_KEY environment variable' });
+  }
+
+  const [id, secret] = apiKey.split(':');
 
   const payload = {
     iat: Math.floor(Date.now() / 1000),
