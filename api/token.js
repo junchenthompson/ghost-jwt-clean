@@ -6,12 +6,15 @@ export default function handler(req, res) {
     exp: Math.floor(Date.now() / 1000) + 5 * 60, // 5分钟后过期
   };
 
-  const secret = 'mysecret'; // 你可以之后用环境变量替代
+  const secret = 'mysecret'; // 测试用，你可以替换成 Ghost Admin Secret
 
   try {
-    const token = jwt.sign(payload, secret);
+    const token = jwt.sign(payload, secret, { algorithm: 'HS256' });
     res.status(200).json({ token });
   } catch (err) {
-    res.status(500).json({ error: 'JWT generation failed', details: err.message });
+    res.status(500).json({
+      error: 'JWT generation failed',
+      details: err.message,
+    });
   }
 }
