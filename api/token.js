@@ -17,9 +17,8 @@ export default function handler(req, res) {
       audience: '/v3/admin/',
     });
 
-    return res.status(200).json({
-      token: `Ghost ${token}`,
-    });
+    return res.status(200).json({ token });
+
   } catch (err) {
     console.error('Token generation error:', err);
     return res.status(500).json({ error: 'Token generation failed' });
