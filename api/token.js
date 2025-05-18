@@ -16,3 +16,6 @@ export default function handler(req, res) {
 
   res.status(200).json({ token });
 }
+
+console.log("Generated JWT:", token);
+console.log("Payload:", payload);
