@@ -1,25 +1,17 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-module.exports = (req, res) => {
-  const [id, secret] = process.env.GHOST_ADMIN_API_KEY.split(':');
-  if (!id || !secret) {
-    return res.status(500).json({ error: "Invalid GHOST_ADMIN_API_KEY format" });
-  }
-
+export default function handler(req, res) {
   const token = jwt.sign(
     {
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 5 * 60,
-      aud: "/v3/admin/"
+      exp: Math.floor(Date.now() / 1000) + 60 * 5, // 5分钟有效
+      aud: "/v3/admin/",
     },
-    Buffer.from(secret, 'hex'),
+    process.env.GHOST_ADMIN_API_SECRET,
     {
-      header: {
-        alg: 'HS256',
-        kid: id
-      }
+      algorithm: "HS256",
+      keyid: process.env.GHOST_ADMIN_API_KEY_ID,
     }
   );
 
-  res.status(200).json({ token });
-};
+  res.status(200).json({ token: `Ghost ${token}` });
+}
