@@ -1,14 +1,18 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export default function handler(req, res) {
+module.exports = (req, res) => {
+  const [id, secret] = process.env.GHOST_ADMIN_API_KEY.split(':');
+
   const payload = {
     iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 600,
-    aud: "/v3/admin/",
+    exp: Math.floor(Date.now() / 1000) + 10 * 60,
+    aud: "/v3/admin/"
   };
-  const token = jwt.sign(payload, process.env.GHOST_ADMIN_API_KEY, {
-    keyid: process.env.GHOST_ADMIN_API_KEY.split(":")[0],
-    algorithm: "HS256",
+
+  const token = jwt.sign(payload, Buffer.from(secret, 'hex'), {
+    keyid: id,
+    algorithm: "HS256"
   });
+
   res.status(200).json({ token });
-}
+};
